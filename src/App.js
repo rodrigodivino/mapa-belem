@@ -1,5 +1,6 @@
 import React from "react";
 import { Map, TileLayer, Polygon } from "react-leaflet";
+import { schemeTableau10 } from "d3-scale-chromatic";
 import bairros from "./belem.json";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
@@ -25,6 +26,9 @@ function App() {
         {featureArray.map((feature) => (
           <Polygon
             key={feature.properties.place_id}
+            color={schemeTableau10[Math.floor(Math.random() * 10)]}
+            fillOpacity={0.8}
+            weigth={0.3}
             positions={feature.geometry.coordinates[0].map((arr) =>
               arr.reverse()
             )}

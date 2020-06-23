@@ -1,23 +1,24 @@
 import React from "react";
-import { Map, TileLayer, Polygon } from "react-leaflet";
+import { Map, TileLayer, Polygon, SVGOverlay } from "react-leaflet";
 import { schemeTableau10 } from "d3-scale-chromatic";
+
 import bairros from "./belem.json";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
+// import icon from "leaflet/dist/images/marker-icon.png";
+// import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
-import L from "leaflet";
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+// To redefine fedault marker
+// import L from "leaflet";
+// let DefaultIcon = L.icon({
+//   iconUrl: icon,
+//   shadowUrl: iconShadow,
+// });
+// L.Marker.prototype.options.icon = DefaultIcon;
 
 function App() {
   const featureArray = bairros.flatMap((b) => b.features);
-  console.log(featureArray[0].geometry.coordinates[0]);
   return (
     <div className="App">
       <h1> Leaflet + D3 Integration in React </h1>
@@ -38,6 +39,14 @@ function App() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
+        <SVGOverlay
+          bounds={[
+            [-1.445833 - 0.1, -48.463887 - 0.1],
+            [-1.445833 + 0.1, -48.463887 + 0.1],
+          ]}
+        >
+          <rect width={10000} height={100000} id="rect"></rect>
+        </SVGOverlay>
       </Map>
       <p> Geocoding provided by the Nominatim API</p>
     </div>

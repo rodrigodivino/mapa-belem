@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Map, TileLayer, useLeaflet } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import { Map, TileLayer } from "react-leaflet";
 import { geoPath } from "d3-geo";
 import Overlay from "./Overlay.js";
 import { SVGOverlay } from "react-leaflet";
@@ -8,36 +8,16 @@ import bairros from "./belem.json";
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 
-// import icon from "leaflet/dist/images/marker-icon.png";
-// import iconShadow from "leaflet/dist/images/marker-shadow.png";
-
-// To redefine fedault marker
-// import L from "leaflet";
-// let DefaultIcon = L.icon({
-//   iconUrl: icon,
-//   shadowUrl: iconShadow,
-// });
-// L.Marker.prototype.options.icon = DefaultIcon;
-const path = geoPath(null);
 function App() {
-  const [bgColor, setColor] = useState("black");
   const [zoom, setZoom] = useState(13);
-  const [featureArray, setFeatureArray] = useState(
-    bairros.flatMap((b) => b.features)
-  );
 
   return (
     <div className="App">
       <h1> Leaflet + D3 Integration in React </h1>
-
       <Map
         center={[-1.445833, -48.463887]}
         zoom={13}
-        onViewportChange={(d) => {
-          if (d.zoom !== zoom) {
-            setZoom(d.zoom);
-          }
-        }}
+        onzoomend={(d) => setZoom(d.target.getZoom())}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -49,7 +29,7 @@ function App() {
             [-1.445833 + 0.1, -48.463887 + 0.1],
           ]}
         >
-          <Overlay zoom={zoom} />
+          <Overlay bairros={bairros.flatMap((b) => b.features)} />
         </SVGOverlay>
       </Map>
       <p> Geocoding provided by the Nominatim API</p>

@@ -21,16 +21,24 @@ import "leaflet/dist/leaflet.css";
 const path = geoPath(null);
 function App() {
   const [bgColor, setColor] = useState("black");
+  const [zoom, setZoom] = useState(13);
   const [featureArray, setFeatureArray] = useState(
     bairros.flatMap((b) => b.features)
   );
 
-  console.log(useLeaflet());
   return (
     <div className="App">
       <h1> Leaflet + D3 Integration in React </h1>
 
-      <Map center={[-1.445833, -48.463887]} zoom={13}>
+      <Map
+        center={[-1.445833, -48.463887]}
+        zoom={13}
+        onViewportChange={(d) => {
+          if (d.zoom !== zoom) {
+            setZoom(d.zoom);
+          }
+        }}
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -41,7 +49,7 @@ function App() {
             [-1.445833 + 0.1, -48.463887 + 0.1],
           ]}
         >
-          <Overlay />
+          <Overlay zoom={zoom} />
         </SVGOverlay>
       </Map>
       <p> Geocoding provided by the Nominatim API</p>

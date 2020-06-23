@@ -1,6 +1,8 @@
-import React from "react";
-import { Map, TileLayer, Polygon, SVGOverlay } from "react-leaflet";
-import { schemeTableau10 } from "d3-scale-chromatic";
+import React, { useState } from "react";
+import { Map, TileLayer, useLeaflet } from "react-leaflet";
+import { geoPath } from "d3-geo";
+import Overlay from "./Overlay.js";
+import { SVGOverlay } from "react-leaflet";
 
 import bairros from "./belem.json";
 import "./App.css";
@@ -16,25 +18,19 @@ import "leaflet/dist/leaflet.css";
 //   shadowUrl: iconShadow,
 // });
 // L.Marker.prototype.options.icon = DefaultIcon;
-
+const path = geoPath(null);
 function App() {
-  const featureArray = bairros.flatMap((b) => b.features);
+  const [bgColor, setColor] = useState("black");
+  const [featureArray, setFeatureArray] = useState(
+    bairros.flatMap((b) => b.features)
+  );
+
+  console.log(useLeaflet());
   return (
     <div className="App">
       <h1> Leaflet + D3 Integration in React </h1>
 
       <Map center={[-1.445833, -48.463887]} zoom={13}>
-        {featureArray.map((feature) => (
-          <Polygon
-            key={feature.properties.place_id}
-            color={schemeTableau10[Math.floor(Math.random() * 10)]}
-            fillOpacity={0.8}
-            weigth={0.3}
-            positions={feature.geometry.coordinates[0].map((arr) =>
-              arr.reverse()
-            )}
-          />
-        ))}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -45,7 +41,7 @@ function App() {
             [-1.445833 + 0.1, -48.463887 + 0.1],
           ]}
         >
-          <rect width={10000} height={100000} id="rect"></rect>
+          <Overlay />
         </SVGOverlay>
       </Map>
       <p> Geocoding provided by the Nominatim API</p>
